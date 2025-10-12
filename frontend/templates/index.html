@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Consumption Tracker - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-bolt"></i>
+                <span>Energy Tracker</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="active">Home</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/login" class="btn-primary">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Track, Analyze & Optimize Your Energy Consumption</h1>
+                <p class="hero-subtitle">
+                    Monitor your household energy usage in real-time, get AI-powered predictions, 
+                    and receive personalized insights to reduce your electricity bills.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/login" class="btn-primary btn-large">Get Started</a>
+                    <a href="#features" class="btn-secondary btn-large">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="energy-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: #2E86AB;">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Real-Time Monitoring</h3>
+                    <p>Track your energy consumption in real-time with detailed analytics and visualizations.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: #A23B72;">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI Predictions</h3>
+                    <p>Get accurate forecasts of future energy usage and costs using machine learning.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: #F18F01;">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Smart Insights</h3>
+                    <p>Receive personalized recommendations to reduce consumption and save money.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: #06A77D;">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>Appliance Tracking</h3>
+                    <p>Identify which appliances consume the most energy and optimize their usage.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: #F77F00;">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h3>Cost Analysis</h3>
+                    <p>Understand your electricity bills with detailed cost breakdowns and trends.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: #06A77D;">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Carbon Footprint</h3>
+                    <p>Calculate your environmental impact and track your sustainability progress.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Sign Up & Set Up</h3>
+                    <p>Create your account and configure your household details and tariff rate.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Add Your Data</h3>
+                    <p>Input your energy consumption data or connect smart meters (future feature).</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Analyze & Predict</h3>
+                    <p>Our AI analyzes your patterns and predicts future consumption.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Optimize & Save</h3>
+                    <p>Follow personalized recommendations to reduce costs and carbon footprint.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Average Savings</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Real-Time Monitoring</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">AI</div>
+                    <div class="stat-label">Powered Predictions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Data Privacy</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Start Saving Energy?</h2>
+            <p>Join thousands of households reducing their energy consumption and costs.</p>
+            <a href="/login" class="btn-primary btn-large">Get Started Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-bolt"></i> Energy Tracker</h4>
+                    <p>Empowering households to make sustainable energy choices.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/login">Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@energytracker.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Energy Consumption Tracker. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

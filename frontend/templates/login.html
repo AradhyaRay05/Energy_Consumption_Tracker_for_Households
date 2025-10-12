@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Energy Consumption Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-bolt"></i>
+                <span>Energy Tracker</span>
+            </div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/login" class="active">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="auth-section">
+        <div class="auth-container">
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="register">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form active">
+                <h2>Welcome Back!</h2>
+                <p class="auth-subtitle">Login to your account to continue</p>
+                
+                <div id="login-message" class="message hidden"></div>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-username">
+                            <i class="fas fa-user"></i> Username
+                        </label>
+                        <input type="text" id="login-username" name="username" required 
+                               placeholder="Enter your username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <input type="password" id="login-password" name="password" required 
+                               placeholder="Enter your password">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+                
+                <p class="auth-switch">
+                    Don't have an account? <a href="#" onclick="switchTab('register')">Register here</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="auth-form">
+                <h2>Create Account</h2>
+                <p class="auth-subtitle">Join us to start tracking your energy</p>
+                
+                <div id="register-message" class="message hidden"></div>
+                
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="register-fullname">
+                            <i class="fas fa-user"></i> Full Name
+                        </label>
+                        <input type="text" id="register-fullname" name="full_name" required 
+                               placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-email">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" id="register-email" name="email" required 
+                               placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-username">
+                            <i class="fas fa-user-circle"></i> Username
+                        </label>
+                        <input type="text" id="register-username" name="username" required 
+                               placeholder="Choose a username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <input type="password" id="register-password" name="password" required 
+                               placeholder="Create a password" minlength="6">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="household-size">
+                                <i class="fas fa-home"></i> Household Size
+                            </label>
+                            <input type="number" id="household-size" name="household_size" 
+                                   min="1" max="20" value="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tariff-rate">
+                                <i class="fas fa-dollar-sign"></i> Tariff Rate ($/kWh)
+                            </label>
+                            <input type="number" id="tariff-rate" name="tariff_rate" 
+                                   step="0.01" min="0" value="0.12" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </form>
+                
+                <p class="auth-switch">
+                    Already have an account? <a href="#" onclick="switchTab('login')">Login here</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+</html>

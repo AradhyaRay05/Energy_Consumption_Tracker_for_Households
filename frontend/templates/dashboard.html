@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Energy Consumption Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <!-- Navigation -->
+    <nav class="navbar navbar-dashboard">
+        <div class="container-fluid">
+            <div class="nav-brand">
+                <i class="fas fa-bolt"></i>
+                <span>Energy Tracker</span>
+            </div>
+            <div class="nav-links">
+                <span class="user-welcome">Welcome, <span id="username">User</span></span>
+                <button onclick="handleLogout()" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="#overview">
+                        <i class="fas fa-home"></i>
+                        <span>Overview</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#consumption">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Consumption</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#appliances">
+                        <i class="fas fa-plug"></i>
+                        <span>Appliances</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#predictions">
+                        <i class="fas fa-crystal-ball"></i>
+                        <span>Predictions</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#insights">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Insights</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#adddata">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Add Data</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Statistics Cards -->
+            <section class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #2E86AB;">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-kwh">0.00</h3>
+                        <p>Total Energy (kWh)</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #F18F01;">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-cost">$0.00</h3>
+                        <p>Total Cost</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #06A77D;">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="avg-daily">0.00</h3>
+                        <p>Avg Daily (kWh)</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #A23B72;">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="carbon-footprint">0.0</h3>
+                        <p>Carbon (kg CO₂)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Insights Section -->
+            <section class="insights-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-lightbulb"></i> Energy Insights</h2>
+                    <button onclick="refreshInsights()" class="btn-refresh">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                <div id="insights-container" class="insights-container">
+                    <div class="loading">Loading insights...</div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <!-- Daily Consumption Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Daily Consumption</h3>
+                        <select id="daily-days" onchange="loadDailyChart()">
+                            <option value="7">Last 7 Days</option>
+                            <option value="30" selected>Last 30 Days</option>
+                            <option value="90">Last 90 Days</option>
+                        </select>
+                    </div>
+                    <div class="chart-content" id="daily-chart">
+                        <div class="loading">Loading chart...</div>
+                    </div>
+                </div>
+
+                <!-- Appliance Breakdown Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-plug"></i> Appliance Breakdown</h3>
+                    </div>
+                    <div class="chart-content" id="appliance-chart">
+                        <div class="loading">Loading chart...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Predictions Section -->
+            <section class="predictions-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-crystal-ball"></i> Energy Predictions</h2>
+                    <button onclick="loadPredictions()" class="btn-primary">
+                        <i class="fas fa-magic"></i> Generate Predictions
+                    </button>
+                </div>
+                <div id="predictions-container" class="predictions-container">
+                    <p class="text-muted">Click "Generate Predictions" to see AI-powered forecasts</p>
+                </div>
+            </section>
+
+            <!-- Add Data Section -->
+            <section class="add-data-section" style="display: none;" id="add-data-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-plus-circle"></i> Add Energy Record</h2>
+                </div>
+                <div class="add-data-form">
+                    <form onsubmit="handleAddData(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appliance-select">
+                                    <i class="fas fa-plug"></i> Appliance
+                                </label>
+                                <select id="appliance-select" name="appliance_name" required>
+                                    <option value="">Select Appliance</option>
+                                    <option value="Air Conditioner">Air Conditioner</option>
+                                    <option value="Refrigerator">Refrigerator</option>
+                                    <option value="Washing Machine">Washing Machine</option>
+                                    <option value="Dryer">Dryer</option>
+                                    <option value="Dishwasher">Dishwasher</option>
+                                    <option value="Microwave">Microwave</option>
+                                    <option value="Electric Oven">Electric Oven</option>
+                                    <option value="Television">Television</option>
+                                    <option value="Computer">Computer</option>
+                                    <option value="Water Heater">Water Heater</option>
+                                    <option value="LED Lights">LED Lights</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="power-usage">
+                                    <i class="fas fa-bolt"></i> Power Usage (kWh)
+                                </label>
+                                <input type="number" id="power-usage" name="power_usage_kwh" 
+                                       step="0.01" min="0" required placeholder="e.g., 2.5">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="duration">
+                                    <i class="fas fa-clock"></i> Duration (hours)
+                                </label>
+                                <input type="number" id="duration" name="duration_hours" 
+                                       step="0.1" min="0" value="1.0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="timestamp">
+                                <i class="fas fa-calendar"></i> Date & Time
+                            </label>
+                            <input type="datetime-local" id="timestamp" name="timestamp" required>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Add Record
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
