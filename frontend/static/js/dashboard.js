@@ -49,7 +49,7 @@ async function loadSummaryStats() {
         
         if (response.ok && data.stats) {
             document.getElementById('total-kwh').textContent = data.stats.total_kwh.toFixed(2);
-            document.getElementById('total-cost').textContent = `$${data.stats.total_cost.toFixed(2)}`;
+            document.getElementById('total-cost').textContent = `₹${data.stats.total_cost.toFixed(2)}`;
             document.getElementById('avg-daily').textContent = data.stats.avg_daily.toFixed(2);
             document.getElementById('carbon-footprint').textContent = `${data.stats.carbon_kg.toFixed(1)} kg`;
         }
@@ -142,27 +142,85 @@ async function loadApplianceChart() {
 // Load predictions
 async function loadPredictions() {
     const container = document.getElementById('predictions-container');
+    const daysSelect = document.getElementById('prediction-days');
+    const days = parseInt(daysSelect.value);
+    
     container.innerHTML = '<div class="loading">Generating predictions...</div>';
     
     try {
-        const response = await fetch(`${API_URL}/predict/daily?days=7`, {
+        const response = await fetch(`${API_URL}/predict/daily?days=${days}`, {
             credentials: 'include'
         });
         
         const data = await response.json();
         
         if (response.ok && data.predictions && data.predictions.length > 0) {
+            // Calculate total predicted consumption and cost
+            let totalKwh = 0;
+            let totalCost = 0;
+            
+            data.predictions.forEach(pred => {
+                totalKwh += pred.predicted_kwh;
+                totalCost += pred.predicted_cost;
+            });
+            
+            // Show success toast
+            toast.success('Predictions Generated!', `${days}-day forecast ready with ${data.predictions.length} predictions.`);
+            
+            // Bill summary section
+            let summaryHTML = `
+                <div class="prediction-summary">
+                    <div class="summary-header">
+                        <h3><i class="fas fa-file-invoice-dollar"></i> ${days}-Day Forecast Summary</h3>
+                    </div>
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <div class="summary-icon" style="background: #2E86AB;">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="summary-info">
+                                <p class="summary-label">Total Predicted Consumption</p>
+                                <h2 class="summary-value">${totalKwh.toFixed(2)} kWh</h2>
+                            </div>
+                        </div>
+                        <div class="summary-card highlight">
+                            <div class="summary-icon" style="background: #F18F01;">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div class="summary-info">
+                                <p class="summary-label">Predicted Bill Amount</p>
+                                <h2 class="summary-value">₹${totalCost.toFixed(2)}</h2>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon" style="background: #06A77D;">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div class="summary-info">
+                                <p class="summary-label">Average Per Day</p>
+                                <h2 class="summary-value">₹${(totalCost / days).toFixed(2)}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Predictions table
             let tableHTML = `
-                <table class="predictions-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Predicted Consumption (kWh)</th>
-                            <th>Predicted Cost ($)</th>
-                            <th>Confidence</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="predictions-table-wrapper">
+                    <h3 style="margin: 20px 0 15px 0; color: #2c3e50;">
+                        <i class="fas fa-table"></i> Day-by-Day Breakdown
+                    </h3>
+                    <table class="predictions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Predicted Consumption (kWh)</th>
+                                <th>Predicted Cost (₹)</th>
+                                <th>Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
             `;
             
             data.predictions.forEach(pred => {
@@ -171,23 +229,35 @@ async function loadPredictions() {
                     <tr>
                         <td>${pred.date}</td>
                         <td>${pred.predicted_kwh.toFixed(2)}</td>
-                        <td>$${pred.predicted_cost.toFixed(2)}</td>
-                        <td>${confidence}%</td>
+                        <td>₹${pred.predicted_cost.toFixed(2)}</td>
+                        <td><span class="confidence-badge">${confidence}%</span></td>
                     </tr>
                 `;
             });
             
-            tableHTML += '</tbody></table>';
-            container.innerHTML = tableHTML;
+            tableHTML += `
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td><strong>TOTAL</strong></td>
+                                <td><strong>${totalKwh.toFixed(2)} kWh</strong></td>
+                                <td><strong>₹${totalCost.toFixed(2)}</strong></td>
+                                <td>-</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            `;
             
-            // Also load monthly prediction
-            loadMonthlyPrediction();
+            container.innerHTML = summaryHTML + tableHTML;
         } else {
             container.innerHTML = '<p class="text-muted">Insufficient data for predictions. Add more energy records.</p>';
+            toast.warning('Insufficient Data', 'Add at least 7 energy records to generate predictions.');
         }
     } catch (error) {
         console.error('Error loading predictions:', error);
         container.innerHTML = '<p class="text-muted">Error generating predictions. Make sure you have historical data.</p>';
+        toast.error('Prediction Error', 'Unable to generate predictions. Please try again later.');
     }
 }
 
@@ -217,7 +287,7 @@ async function loadMonthlyPrediction() {
                         <div>
                             <p style="color: #7f8c8d; margin-bottom: 5px;">Predicted Monthly Cost</p>
                             <p style="font-size: 1.8rem; font-weight: bold; color: #F18F01;">
-                                $${data.predicted_monthly_cost}
+                                ₹${data.predicted_monthly_cost}
                             </p>
                         </div>
                     </div>
@@ -254,16 +324,22 @@ async function handleAddData(event) {
         const data = await response.json();
         
         if (response.ok) {
-            alert('Energy record added successfully!');
+            // Show success toast
+            toast.success(
+                'Record Added Successfully!', 
+                `${formData.appliance_name} - ${formData.power_usage_kwh} kWh added to your energy records.`
+            );
             event.target.reset();
             // Refresh dashboard data
             loadDashboardData();
         } else {
-            alert(`Error: ${data.error}`);
+            // Show error toast
+            toast.error('Failed to Add Record', data.error || 'Please check your input and try again.');
         }
     } catch (error) {
         console.error('Error adding data:', error);
-        alert('Connection error. Please try again.');
+        // Show error toast for connection issues
+        toast.error('Connection Error', 'Unable to connect to server. Please check your connection and try again.');
     }
 }
 

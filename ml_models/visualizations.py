@@ -104,9 +104,9 @@ class EnergyVisualizer:
         # Cost plot
         ax2.bar(df['date'], df['total_cost'], 
                color=self.colors['accent'], alpha=0.7, label='Daily Cost')
-        ax2.set_title('Daily Energy Cost ($)', fontsize=14, fontweight='bold')
+        ax2.set_title('Daily Energy Cost (₹)', fontsize=14, fontweight='bold')
         ax2.set_xlabel('Date', fontsize=11)
-        ax2.set_ylabel('Cost ($)', fontsize=11)
+        ax2.set_ylabel('Cost (₹)', fontsize=11)
         ax2.grid(True, alpha=0.3, axis='y')
         ax2.legend()
         
@@ -318,7 +318,7 @@ class EnergyVisualizer:
         ax.set_title('Monthly Energy Consumption and Cost', fontsize=14, fontweight='bold')
         ax.set_xlabel('Month', fontsize=11)
         ax.set_ylabel('Energy (kWh)', fontsize=11, color=self.colors['secondary'])
-        ax2.set_ylabel('Cost ($)', fontsize=11, color=self.colors['warning'])
+        ax2.set_ylabel('Cost (₹)', fontsize=11, color=self.colors['warning'])
         ax.grid(True, alpha=0.3, axis='y')
         
         # Combine legends
@@ -344,7 +344,7 @@ class EnergyVisualizer:
         # Define stat cards
         stats = [
             ('Total Consumption', f"{stats_dict.get('total_kwh', 0):.2f} kWh", self.colors['primary']),
-            ('Total Cost', f"${stats_dict.get('total_cost', 0):.2f}", self.colors['accent']),
+            ('Total Cost', f"₹{stats_dict.get('total_cost', 0):.2f}", self.colors['accent']),
             ('Avg Daily Usage', f"{stats_dict.get('avg_daily', 0):.2f} kWh", self.colors['success']),
             ('Peak Day', f"{stats_dict.get('peak_day', 'N/A')}", self.colors['danger']),
             ('Carbon Footprint', f"{stats_dict.get('carbon_kg', 0):.1f} kg CO₂", self.colors['warning']),

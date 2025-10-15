@@ -321,8 +321,8 @@ if __name__ == "__main__":
     metrics = predictor.train(sample_data)
     
     # Make predictions
-    predictions = predictor.predict_next_days(sample_data, days=7)
-    print("\nNext 7 days predictions:")
+    predictions = predictor.predict_next_days(sample_data, days=30)
+    print("\nNext 30 days predictions:")
     print(predictions)
     
     # Save model

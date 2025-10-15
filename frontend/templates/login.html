@@ -115,10 +115,14 @@
                         
                         <div class="form-group">
                             <label for="tariff-rate">
-                                <i class="fas fa-dollar-sign"></i> Tariff Rate ($/kWh)
+                                <i class="fas fa-rupee-sign"></i> Tariff Rate (₹/kWh)
                             </label>
                             <input type="number" id="tariff-rate" name="tariff_rate" 
-                                   step="0.01" min="0" value="0.12" required>
+                                   step="0.01" min="0" value="7.00" required 
+                                   placeholder="e.g., 6.50, 7.00, 8.00">
+                            <small style="color: #7f8c8d; font-size: 12px; display: block; margin-top: 5px;">
+                                Average rates in India: ₹6-8 per unit (kWh)
+                            </small>
                         </div>
                     </div>
                     
@@ -134,6 +138,7 @@
         </div>
     </section>
 
+    <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 </body>
 </html>

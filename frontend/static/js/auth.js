@@ -62,14 +62,17 @@ async function handleLogin(event) {
         
         if (response.ok) {
             showMessage('login-message', 'Login successful! Redirecting...', 'success');
+            toast.success('Welcome Back!', `Logging in as ${username}...`);
             setTimeout(() => {
                 window.location.href = '/dashboard';
             }, 1000);
         } else {
             showMessage('login-message', data.error || 'Login failed', 'error');
+            toast.error('Login Failed', data.error || 'Invalid username or password.');
         }
     } catch (error) {
         showMessage('login-message', 'Connection error. Please try again.', 'error');
+        toast.error('Connection Error', 'Unable to connect to server. Please check your connection.');
         console.error('Login error:', error);
     }
 }
@@ -100,14 +103,17 @@ async function handleRegister(event) {
         
         if (response.ok) {
             showMessage('register-message', 'Registration successful! Please login.', 'success');
+            toast.success('Registration Successful!', `Welcome ${formData.full_name}! You can now login.`);
             setTimeout(() => {
                 switchTab('login');
             }, 2000);
         } else {
             showMessage('register-message', data.error || 'Registration failed', 'error');
+            toast.error('Registration Failed', data.error || 'Please check your information and try again.');
         }
     } catch (error) {
         showMessage('register-message', 'Connection error. Please try again.', 'error');
+        toast.error('Connection Error', 'Unable to connect to server. Please check your connection.');
         console.error('Registration error:', error);
     }
 }
