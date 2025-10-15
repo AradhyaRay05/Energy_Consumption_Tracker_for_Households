@@ -4,7 +4,7 @@ Handles MySQL connection and common database operations
 """
 
 import mysql.connector
-from mysql.connector import Error
+from mysql.connector import Error, pooling
 import os
 from datetime import datetime, timedelta
 import pandas as pd
@@ -20,6 +20,56 @@ class DatabaseConfig:
         self.user = os.getenv('DB_USER', 'root')
         self.password = os.getenv('DB_PASSWORD', '')
         self.connection = None
+        self.connection_pool = None
+        self._initialize_pool()
+    
+    def _initialize_pool(self):
+        """Initialize connection pool for handling concurrent requests"""
+        try:
+            self.connection_pool = pooling.MySQLConnectionPool(
+                pool_name="energy_tracker_pool",
+                pool_size=10,
+                pool_reset_session=True,
+                host=self.host,
+                port=self.port,
+                database=self.database,
+                user=self.user,
+                password=self.password,
+                autocommit=True,
+                use_pure=True,
+                allow_local_infile=True,
+                connection_timeout=10,
+                auth_plugin='mysql_native_password',
+                ssl_disabled=True
+            )
+            print(f"Connection pool initialized with 10 connections")
+        except Error as e:
+            print(f"Error creating connection pool: {e}")
+            self.connection_pool = None
+    
+    def get_connection(self):
+        """Get a connection from the pool"""
+        try:
+            if self.connection_pool:
+                return self.connection_pool.get_connection()
+            else:
+                # Fallback to direct connection if pool not available
+                return mysql.connector.connect(
+                    host=self.host,
+                    port=self.port,
+                    database=self.database,
+                    user=self.user,
+                    password=self.password,
+                    autocommit=True,
+                    use_pure=True,
+                    allow_local_infile=True,
+                    connection_timeout=10,
+                    auth_plugin='mysql_native_password',
+                    ssl_disabled=True
+                )
+        except Error as e:
+            print(f"Error getting connection: {e}")
+            return None
     
     def connect(self):
         """Establish database connection"""
@@ -38,9 +88,11 @@ class DatabaseConfig:
                 user=self.user,
                 password=self.password,
                 autocommit=True,  # Enable autocommit to prevent locks
-                use_pure=True,  # Use pure Python implementation (no C extension issues)
-                ssl_disabled=True,  # Disable SSL to avoid SSL errors
-                connection_timeout=10  # Add 10 second timeout
+                use_pure=True,  # Use pure Python implementation
+                allow_local_infile=True,
+                connection_timeout=10,  # Add 10 second timeout
+                auth_plugin='mysql_native_password',  # Use native password authentication
+                ssl_disabled=True  # Completely disable SSL
             )
             print(f"Successfully connected to MySQL database: {self.database}")
             return True
@@ -67,7 +119,7 @@ class DatabaseConfig:
     
     def execute_query(self, query, params=None, fetch=False):
         """
-        Execute a SQL query
+        Execute a SQL query using connection pool
         
         Args:
             query: SQL query string
@@ -77,53 +129,52 @@ class DatabaseConfig:
         Returns:
             Query results if fetch=True, otherwise affected row count
         """
-        max_retries = 2
+        connection = None
+        cursor = None
+        max_retries = 3
+        
         for attempt in range(max_retries):
             try:
-                # Check if connection exists
-                if self.connection is None:
-                    if not self.connect():
-                        return None if fetch else 0
+                # Get a fresh connection from the pool for each query
+                connection = self.get_connection()
+                if connection is None:
+                    print(f"Failed to get connection (attempt {attempt + 1}/{max_retries})")
+                    if attempt < max_retries - 1:
+                        continue
+                    return None if fetch else 0
                 
-                # Try to create cursor, if it fails due to is_connected() error, reconnect
-                try:
-                    cursor = self.connection.cursor(dictionary=True)
-                except (Error, IndexError) as cursor_error:
-                    print(f"Error creating cursor: {cursor_error}, reconnecting...")
-                    try:
-                        if self.connection:
-                            self.connection.close()
-                    except:
-                        pass
-                    if not self.connect():
-                        return None if fetch else 0
-                    cursor = self.connection.cursor(dictionary=True)
-                
+                # Create cursor and execute query
+                cursor = connection.cursor(dictionary=True)
                 cursor.execute(query, params or ())
                 
                 if fetch:
                     results = cursor.fetchall()
                     cursor.close()
+                    connection.close()  # Return connection to pool
                     return results
                 else:
-                    # No need to commit since autocommit is enabled
                     affected_rows = cursor.rowcount
                     cursor.close()
+                    connection.close()  # Return connection to pool
                     return affected_rows
                     
-            except Error as e:
+            except (Error, IndexError, ReferenceError) as e:
                 print(f"Error executing query (attempt {attempt + 1}/{max_retries}): {e}")
+                
+                # Clean up on error
+                try:
+                    if cursor:
+                        cursor.close()
+                    if connection:
+                        connection.close()
+                except:
+                    pass
+                
                 if attempt < max_retries - 1:
-                    # Try to reconnect
-                    try:
-                        if self.connection:
-                            self.connection.close()
-                    except:
-                        pass
-                    self.connect()
-                else:
-                    return None if fetch else 0
+                    continue
         
+        # All retries failed
+        print(f"Query failed after {max_retries} attempts")
         return None if fetch else 0
     
     def get_user_by_username(self, username):
