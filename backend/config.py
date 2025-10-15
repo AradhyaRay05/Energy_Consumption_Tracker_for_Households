@@ -29,8 +29,8 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
     
     # Application Settings
-    DEFAULT_TARIFF_RATE = float(os.environ.get('TARIFF_RATE_DEFAULT', 0.12))
-    CO2_PER_KWH = 0.92 * 0.453592  # pounds to kg
+    DEFAULT_TARIFF_RATE = float(os.environ.get('TARIFF_RATE_DEFAULT', 7.00))  # ₹7.00 per kWh (Indian tariff)
+    CO2_PER_KWH = 0.82  # kg CO2 per kWh (India's carbon intensity)
     
     # ML Model Settings
     MODEL_PATH = 'ml_models/models'

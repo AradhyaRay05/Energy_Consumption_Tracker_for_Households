@@ -1,12 +1,15 @@
-# ⚡ Energy Consumption Tracker for Households
+# ⚡ Energy Consumption Tracker for Indian Households
 
-A comprehensive full-stack web application that empowers households to monitor, analyze, and predict their energy consumption using machine learning. Track your electricity usage, visualize patterns, get AI-powered predictions, and receive personalized insights to reduce costs and carbon footprint.
+A comprehensive full-stack web application that empowers Indian households to monitor, analyze, and predict their energy consumption using machine learning. Track your electricity usage, visualize patterns, get AI-powered predictions, and receive personalized insights to reduce costs and carbon footprint.
+
+**🇮🇳 Configured for India**: Uses Indian Rupees (₹), Indian electricity tariff rates (₹6-8/kWh), and India's carbon intensity (0.82 kg CO₂/kWh).
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3.0-orange.svg)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+![India](https://img.shields.io/badge/Region-India-orange.svg)
 
 ---
 
@@ -56,7 +59,28 @@ To develop a **software-based web application** that allows households to:
 
 ---
 
-## 🌟 Features
+## �🇳 India-Specific Features
+
+This application is specially configured for Indian households:
+
+- **Currency**: All costs displayed in Indian Rupees (₹)
+- **Default Tariff**: ₹7.00 per kWh (adjustable based on your state/DISCOM)
+- **Carbon Footprint**: Uses India's grid carbon intensity (0.82 kg CO₂/kWh)
+- **Regional Tariffs**: Supports rates from ₹3-12/kWh (varies by state)
+- **Slab-Based Pricing**: Calculate effective rates from your electricity bill
+- **State-wise Information**: Comprehensive guide for all Indian states (see [INDIA_TARIFF_INFO.md](INDIA_TARIFF_INFO.md))
+
+### Supported Tariff Ranges by Region:
+- **North India**: ₹5.50 - ₹9.00 per kWh
+- **South India**: ₹3.50 - ₹9.50 per kWh
+- **West India**: ₹5.00 - ₹12.00 per kWh
+- **East India**: ₹5.50 - ₹9.00 per kWh
+
+📖 **See [INDIA_TARIFF_INFO.md](INDIA_TARIFF_INFO.md) for detailed state-wise rates and tips!**
+
+---
+
+## �🌟 Features
 
 ### Core Features
 

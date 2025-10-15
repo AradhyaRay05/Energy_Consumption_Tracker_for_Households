@@ -33,12 +33,15 @@ app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-change-in-product
 CORS(app, supports_credentials=True, origins=['http://localhost:5000', 'http://127.0.0.1:5000'])
 
 # Initialize components
-db = DatabaseConfig()
+db = DatabaseConfig()  # This now initializes the connection pool automatically
 predictor = EnergyPredictor(model_path='../ml_models/models')
 visualizer = EnergyVisualizer(output_dir='../frontend/static/plots')
 
-# Connect to database
-db.connect()
+# Verify connection pool is ready
+if db.connection_pool:
+    print("✓ Connection pool ready with 10 connections")
+else:
+    print("⚠ Connection pool failed, using fallback connections")
 
 
 # ==================== UTILITY FUNCTIONS ====================
@@ -46,9 +49,9 @@ db.connect()
 def calculate_carbon_footprint(kwh):
     """
     Calculate carbon footprint from energy consumption
-    Average: 0.92 pounds CO2 per kWh (US average)
+    India's grid carbon intensity: ~0.82 kg CO2 per kWh
     """
-    CO2_PER_KWH = 0.92 * 0.453592  # Convert pounds to kg
+    CO2_PER_KWH = 0.82  # kg CO2 per kWh (India's average)
     return kwh * CO2_PER_KWH
 
 
@@ -100,11 +103,18 @@ def generate_insights(user_id, daily_data, appliance_data):
             })
     
     # Money saving tip
-    potential_savings = avg_consumption * 0.15 * 0.12 * 30  # 15% reduction
+    try:
+        user = db.get_user_by_id(user_id)
+        tariff_rate = float(user.get('tariff_rate', 7.00)) if user else 7.00  # Get user's tariff rate, default ₹7.00/kWh
+    except Exception as e:
+        print(f"Warning: Could not get user tariff rate: {e}")
+        tariff_rate = 7.00  # Default to ₹7.00/kWh if there's an error
+    
+    potential_savings = avg_consumption * 0.15 * tariff_rate * 30  # 15% reduction
     insights.append({
         'type': 'success',
         'priority': 'high',
-        'text': f'💰 By reducing consumption by 15%, you could save approximately ${potential_savings:.2f} per month!'
+        'text': f'💰 By reducing consumption by 15%, you could save approximately ₹{potential_savings:.2f} per month!'
     })
     
     return insights
@@ -133,7 +143,7 @@ def register():
         password = data.get('password')
         full_name = data.get('full_name', '')
         household_size = data.get('household_size', 1)
-        tariff_rate = data.get('tariff_rate', 0.12)
+        tariff_rate = data.get('tariff_rate', 7.00)  # Default Indian tariff rate ₹7.00/kWh
         
         # Validate input
         if not all([username, email, password]):
@@ -318,9 +328,14 @@ def get_insights():
         print(f"Appliance data: {len(appliance_data) if appliance_data else 0} records")  # Debug
         
         # Generate insights
-        insights = generate_insights(user_id, daily_data, appliance_data)
-        
-        print(f"Generated {len(insights)} insights")  # Debug
+        try:
+            insights = generate_insights(user_id, daily_data, appliance_data)
+            print(f"Generated {len(insights)} insights")  # Debug
+        except Exception as insight_error:
+            print(f"Error generating insights: {insight_error}")  # Debug
+            import traceback
+            traceback.print_exc()
+            insights = []  # Return empty list on error
         
         return jsonify({'insights': insights}), 200
         
@@ -443,26 +458,40 @@ def predict_daily():
         user_id = session['user_id']
         days = int(request.args.get('days', 7))
         
+        print(f"Predict daily - User ID: {user_id}, Days: {days}")
+        
         # Get historical data
         historical_df = db.get_data_as_dataframe(user_id)
         
-        if historical_df.empty:
-            return jsonify({'error': 'Insufficient data for prediction'}), 400
+        print(f"Historical data shape: {historical_df.shape if not historical_df.empty else 'EMPTY'}")
+        print(f"Historical data columns: {historical_df.columns.tolist() if not historical_df.empty else 'NONE'}")
+        
+        if historical_df.empty or len(historical_df) < 7:
+            print(f"Insufficient data: {len(historical_df)} records (need at least 7)")
+            return jsonify({'error': 'Insufficient data for predictions. Add more energy records.'}), 400
         
         # Get user's tariff rate
         user = db.get_user_by_id(user_id)
-        tariff_rate = user['tariff_rate']
+        tariff_rate = float(user['tariff_rate'])
+        
+        print(f"User tariff rate: {tariff_rate}")
         
         # Load or train model
         try:
             predictor.load_model()
-        except:
+            print("Model loaded successfully")
+        except Exception as e:
+            print(f"Model not found, training new model: {e}")
             # Train model if not exists
             predictor.train(historical_df)
             predictor.save_model()
+            print("Model trained and saved")
         
         # Make predictions
+        print("Generating predictions...")
         predictions = predictor.predict_next_days(historical_df, days=days, tariff_rate=tariff_rate)
+        
+        print(f"Predictions shape: {predictions.shape}")
         
         # Convert to dict
         predictions_list = predictions.to_dict('records')
@@ -471,9 +500,14 @@ def predict_daily():
         for pred in predictions_list:
             pred['date'] = pred['date'].strftime('%Y-%m-%d')
         
+        print(f"Returning {len(predictions_list)} predictions")
+        
         return jsonify({'predictions': predictions_list}), 200
         
     except Exception as e:
+        print(f"Error in predict_daily: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 
