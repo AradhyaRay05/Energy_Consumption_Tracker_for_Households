@@ -285,7 +285,44 @@ async function loadApplianceCharts() {
         console.error('Error loading appliance efficiency chart:', error);
         efficiencyContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
     }
+    
+    // Load appliance usage timeline chart
+    loadApplianceTimeline();
 }
+
+// Load appliance timeline chart
+async function loadApplianceTimeline() {
+    const timelineContainer = document.getElementById('appliance-timeline-chart');
+    const daysSelect = document.getElementById('timeline-days');
+    const days = daysSelect ? daysSelect.value : 7;
+    
+    timelineContainer.innerHTML = '<div class="loading">Loading chart...</div>';
+    
+    try {
+        const response = await fetch(`${API_URL}/visualize/appliance-usage-timeline?format=base64&days=${days}`, {
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.image) {
+            timelineContainer.innerHTML = `<img src="${data.image}" alt="Appliance Timeline Chart">`;
+        } else {
+            timelineContainer.innerHTML = '<p class="text-muted">No data available for visualization</p>';
+        }
+    } catch (error) {
+        console.error('Error loading appliance timeline chart:', error);
+        timelineContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
+    }
+}
+
+// Add event listener for timeline days selector
+document.addEventListener('DOMContentLoaded', function() {
+    const timelineDaysSelect = document.getElementById('timeline-days');
+    if (timelineDaysSelect) {
+        timelineDaysSelect.addEventListener('change', loadApplianceTimeline);
+    }
+});
 
 // Load predictions
 async function loadPredictions() {

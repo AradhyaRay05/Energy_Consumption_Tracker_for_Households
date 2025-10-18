@@ -677,8 +677,14 @@ class EnergyVisualizer:
         weekday_avg = weekly_data[weekly_data['day_name'].isin(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])]['avg_kwh'].mean()
         weekend_avg = weekly_data[weekly_data['day_name'].isin(['Saturday', 'Sunday'])]['avg_kwh'].mean()
         
+        # Handle NaN values
+        if pd.isna(weekday_avg) or weekday_avg == 0:
+            weekday_avg = 1.0
+        if pd.isna(weekend_avg) or weekend_avg == 0:
+            weekend_avg = 1.0
+        
         labels = ['Weekdays\n(Mon-Fri)', 'Weekends\n(Sat-Sun)']
-        sizes = [weekday_avg, weekend_avg]
+        sizes = [float(weekday_avg), float(weekend_avg)]
         colors_pie = ['#3498db', '#e74c3c']
         explode = (0.1, 0)
         
@@ -733,6 +739,79 @@ class EnergyVisualizer:
                    ha='left', va='center', fontsize=14, fontweight='bold',
                    bbox=dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.9, 
                             edgecolor=colors[i], linewidth=2))
+        
+        plt.tight_layout()
+        return self._save_figure(fig, save_as, return_base64)
+    
+    def plot_appliance_usage_timeline(self, timeline_data, save_as='appliance_timeline.png', return_base64=False):
+        """
+        Plot appliance usage over time (stacked area chart)
+        
+        Args:
+            timeline_data: DataFrame with columns: date, appliance_name, kwh
+            save_as: Output filename
+            return_base64: Return as base64 string
+        """
+        # Pivot data for stacked area chart
+        pivot_data = timeline_data.pivot_table(
+            index='date', 
+            columns='appliance_name', 
+            values='kwh', 
+            aggfunc='sum'
+        ).fillna(0)
+        
+        fig, ax = plt.subplots(figsize=(18, 10))
+        
+        # Create color palette
+        colors = plt.cm.Set3(np.linspace(0, 1, len(pivot_data.columns)))
+        
+        # Create stacked area chart
+        ax.stackplot(pivot_data.index, 
+                    *[pivot_data[col] for col in pivot_data.columns],
+                    labels=pivot_data.columns,
+                    colors=colors,
+                    alpha=0.85,
+                    edgecolor='white',
+                    linewidth=2)
+        
+        ax.set_title('📊 Appliance Usage Timeline (Stacked)', fontsize=28, fontweight='bold', pad=30)
+        ax.set_xlabel('Date', fontsize=22, fontweight='bold')
+        ax.set_ylabel('Energy Consumption (kWh)', fontsize=22, fontweight='bold')
+        ax.tick_params(axis='both', labelsize=16)
+        ax.grid(True, alpha=0.3, axis='y', linestyle='--', linewidth=1.5)
+        
+        # Format x-axis dates
+        import matplotlib.dates as mdates
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+        ax.xaxis.set_major_locator(mdates.DayLocator(interval=max(1, len(pivot_data) // 7)))
+        plt.xticks(rotation=45, ha='right')
+        
+        # Add legend
+        ax.legend(loc='upper left', fontsize=16, framealpha=0.95, 
+                 edgecolor='black', fancybox=True, shadow=True,
+                 bbox_to_anchor=(0, 1), ncol=min(3, len(pivot_data.columns)))
+        
+        # Add total consumption line
+        total_daily = pivot_data.sum(axis=1)
+        ax2 = ax.twinx()
+        ax2.plot(pivot_data.index, total_daily, 'r--', linewidth=3.5, 
+                label='Total Daily', marker='o', markersize=10, alpha=0.8)
+        ax2.set_ylabel('Total Daily Consumption (kWh)', fontsize=22, 
+                      fontweight='bold', color='red')
+        ax2.tick_params(axis='y', labelsize=16, labelcolor='red')
+        ax2.legend(loc='upper right', fontsize=18, framealpha=0.95,
+                  edgecolor='red', fancybox=True, shadow=True)
+        
+        # Add statistics box
+        total_consumption = total_daily.sum()
+        avg_daily = total_daily.mean()
+        max_daily = total_daily.max()
+        
+        stats_text = f'Total: {total_consumption:.1f} kWh\nAvg: {avg_daily:.1f} kWh/day\nMax: {max_daily:.1f} kWh/day'
+        props = dict(boxstyle='round,pad=1', facecolor='white', alpha=0.95, 
+                    edgecolor='#2ecc71', linewidth=3)
+        ax.text(0.02, 0.98, stats_text, transform=ax.transAxes,
+               fontsize=17, verticalalignment='top', bbox=props, fontweight='bold')
         
         plt.tight_layout()
         return self._save_figure(fig, save_as, return_base64)
