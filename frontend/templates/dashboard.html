@@ -126,30 +126,65 @@
                 </div>
             </section>
 
-            <!-- Charts Section -->
-            <section class="charts-section">
-                <!-- Daily Consumption Chart -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-chart-line"></i> Daily Consumption</h3>
-                        <select id="daily-days" onchange="loadDailyChart()">
-                            <option value="7">Last 7 Days</option>
-                            <option value="30" selected>Last 30 Days</option>
-                            <option value="90">Last 90 Days</option>
-                        </select>
+            <!-- Consumption Section -->
+            <section class="consumption-section" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Energy Consumption Analysis</h2>
+                    <select id="consumption-days" onchange="loadConsumptionCharts()">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30" selected>Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                    </select>
+                </div>
+                
+                <div class="charts-grid">
+                    <!-- Daily Energy Consumption -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-bolt"></i> Daily Energy Consumption (kWh)</h3>
+                        </div>
+                        <div class="chart-content" id="energy-consumption-chart">
+                            <div class="loading">Loading chart...</div>
+                        </div>
                     </div>
-                    <div class="chart-content" id="daily-chart">
-                        <div class="loading">Loading chart...</div>
+
+                    <!-- Daily Cost Analysis -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-rupee-sign"></i> Daily Cost Analysis (₹)</h3>
+                        </div>
+                        <div class="chart-content" id="cost-analysis-chart">
+                            <div class="loading">Loading chart...</div>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <!-- Appliance Breakdown Chart -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-plug"></i> Appliance Breakdown</h3>
+            <!-- Appliances Section -->
+            <section class="appliances-section" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-plug"></i> Appliance Energy Analysis</h2>
+                </div>
+                
+                <div class="charts-grid">
+                    <!-- Appliance Consumption Bar Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-bar"></i> Appliance Energy Usage</h3>
+                        </div>
+                        <div class="chart-content" id="appliance-bar-chart">
+                            <div class="loading">Loading chart...</div>
+                        </div>
                     </div>
-                    <div class="chart-content" id="appliance-chart">
-                        <div class="loading">Loading chart...</div>
+
+                    <!-- Appliance Distribution Pie Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Energy Distribution</h3>
+                        </div>
+                        <div class="chart-content" id="appliance-pie-chart">
+                            <div class="loading">Loading chart...</div>
+                        </div>
                     </div>
                 </div>
             </section>

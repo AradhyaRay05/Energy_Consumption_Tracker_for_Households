@@ -72,11 +72,50 @@ async function loadInsights() {
         
         if (response.ok && data.insights && data.insights.length > 0) {
             container.innerHTML = '';
+            
+            // Group insights by priority
+            const priorityOrder = ['high', 'medium', 'low'];
+            const groupedInsights = {};
+            priorityOrder.forEach(p => groupedInsights[p] = []);
+            
             data.insights.forEach(insight => {
-                const card = document.createElement('div');
-                card.className = `insight-card ${insight.type}`;
-                card.textContent = insight.text;
-                container.appendChild(card);
+                const priority = insight.priority || 'medium';
+                if (groupedInsights[priority]) {
+                    groupedInsights[priority].push(insight);
+                }
+            });
+            
+            // Display insights by priority
+            priorityOrder.forEach(priority => {
+                if (groupedInsights[priority].length > 0) {
+                    groupedInsights[priority].forEach(insight => {
+                        const card = document.createElement('div');
+                        card.className = `insight-card ${insight.type} priority-${priority}`;
+                        
+                        const icon = document.createElement('div');
+                        icon.className = 'insight-icon';
+                        icon.textContent = insight.icon || '💡';
+                        
+                        const content = document.createElement('div');
+                        content.className = 'insight-content';
+                        
+                        if (insight.title) {
+                            const title = document.createElement('div');
+                            title.className = 'insight-title';
+                            title.textContent = insight.title;
+                            content.appendChild(title);
+                        }
+                        
+                        const text = document.createElement('div');
+                        text.className = 'insight-text';
+                        text.textContent = insight.text;
+                        content.appendChild(text);
+                        
+                        card.appendChild(icon);
+                        card.appendChild(content);
+                        container.appendChild(card);
+                    });
+                }
             });
         } else {
             container.innerHTML = '<p class="text-muted">No insights available yet. Add more data to get personalized recommendations.</p>';
@@ -93,49 +132,95 @@ function refreshInsights() {
 }
 
 // Load daily consumption chart
-async function loadDailyChart() {
-    const days = document.getElementById('daily-days').value;
-    const container = document.getElementById('daily-chart');
-    container.innerHTML = '<div class="loading">Loading chart...</div>';
+// Load consumption charts (energy + cost)
+async function loadConsumptionCharts() {
+    const days = document.getElementById('consumption-days').value;
+    
+    // Load energy consumption chart
+    const energyContainer = document.getElementById('energy-consumption-chart');
+    energyContainer.innerHTML = '<div class="loading">Loading chart...</div>';
     
     try {
-        const response = await fetch(`${API_URL}/visualize/daily?days=${days}&format=base64`, {
+        const response = await fetch(`${API_URL}/visualize/energy-consumption?days=${days}&format=base64`, {
             credentials: 'include'
         });
         
         const data = await response.json();
         
         if (response.ok && data.image) {
-            container.innerHTML = `<img src="${data.image}" alt="Daily Consumption Chart">`;
+            energyContainer.innerHTML = `<img src="${data.image}" alt="Energy Consumption Chart">`;
         } else {
-            container.innerHTML = '<p class="text-muted">No data available for visualization</p>';
+            energyContainer.innerHTML = '<p class="text-muted">No data available for visualization</p>';
         }
     } catch (error) {
-        console.error('Error loading daily chart:', error);
-        container.innerHTML = '<p class="text-muted">Error loading chart</p>';
+        console.error('Error loading energy consumption chart:', error);
+        energyContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
+    }
+    
+    // Load cost analysis chart
+    const costContainer = document.getElementById('cost-analysis-chart');
+    costContainer.innerHTML = '<div class="loading">Loading chart...</div>';
+    
+    try {
+        const response = await fetch(`${API_URL}/visualize/cost-analysis?days=${days}&format=base64`, {
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.image) {
+            costContainer.innerHTML = `<img src="${data.image}" alt="Cost Analysis Chart">`;
+        } else {
+            costContainer.innerHTML = '<p class="text-muted">No data available for visualization</p>';
+        }
+    } catch (error) {
+        console.error('Error loading cost analysis chart:', error);
+        costContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
     }
 }
 
-// Load appliance breakdown chart
-async function loadApplianceChart() {
-    const container = document.getElementById('appliance-chart');
-    container.innerHTML = '<div class="loading">Loading chart...</div>';
+// Load appliance charts (bar + pie)
+async function loadApplianceCharts() {
+    // Load appliance bar chart
+    const barContainer = document.getElementById('appliance-bar-chart');
+    barContainer.innerHTML = '<div class="loading">Loading chart...</div>';
     
     try {
-        const response = await fetch(`${API_URL}/visualize/appliances?format=base64`, {
+        const response = await fetch(`${API_URL}/visualize/appliance-bar?format=base64`, {
             credentials: 'include'
         });
         
         const data = await response.json();
         
         if (response.ok && data.image) {
-            container.innerHTML = `<img src="${data.image}" alt="Appliance Breakdown Chart">`;
+            barContainer.innerHTML = `<img src="${data.image}" alt="Appliance Bar Chart">`;
         } else {
-            container.innerHTML = '<p class="text-muted">No data available for visualization</p>';
+            barContainer.innerHTML = '<p class="text-muted">No data available for visualization</p>';
         }
     } catch (error) {
-        console.error('Error loading appliance chart:', error);
-        container.innerHTML = '<p class="text-muted">Error loading chart</p>';
+        console.error('Error loading appliance bar chart:', error);
+        barContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
+    }
+    
+    // Load appliance pie chart
+    const pieContainer = document.getElementById('appliance-pie-chart');
+    pieContainer.innerHTML = '<div class="loading">Loading chart...</div>';
+    
+    try {
+        const response = await fetch(`${API_URL}/visualize/appliance-pie?format=base64`, {
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.image) {
+            pieContainer.innerHTML = `<img src="${data.image}" alt="Appliance Pie Chart">`;
+        } else {
+            pieContainer.innerHTML = '<p class="text-muted">No data available for visualization</p>';
+        }
+    } catch (error) {
+        console.error('Error loading appliance pie chart:', error);
+        pieContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
     }
 }
 
@@ -347,8 +432,6 @@ async function handleAddData(event) {
 function loadDashboardData() {
     loadSummaryStats();
     loadInsights();
-    loadDailyChart();
-    loadApplianceChart();
 }
 
 // Sidebar navigation
@@ -370,8 +453,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Show/hide sections
             const section = item.getAttribute('href').substring(1);
             
-            // Hide all sections except the selected one
-            document.querySelectorAll('.insights-section, .charts-section, .predictions-section, .add-data-section').forEach(sec => {
+            // Hide all sections
+            document.querySelectorAll('.insights-section, .consumption-section, .appliances-section, .predictions-section, .add-data-section').forEach(sec => {
                 sec.style.display = 'none';
             });
             
@@ -380,15 +463,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('add-data-section').style.display = 'block';
             } else if (section === 'insights') {
                 document.querySelector('.insights-section').style.display = 'block';
-            } else if (section === 'consumption' || section === 'appliances') {
-                document.querySelector('.charts-section').style.display = 'grid';
+            } else if (section === 'consumption') {
+                document.querySelector('.consumption-section').style.display = 'block';
+                loadConsumptionCharts();
+            } else if (section === 'appliances') {
+                document.querySelector('.appliances-section').style.display = 'block';
+                loadApplianceCharts();
             } else if (section === 'predictions') {
                 document.querySelector('.predictions-section').style.display = 'block';
             } else if (section === 'overview') {
-                // Show all main sections
+                // Show main sections
                 document.querySelector('.insights-section').style.display = 'block';
-                document.querySelector('.charts-section').style.display = 'grid';
-                document.querySelector('.predictions-section').style.display = 'block';
             }
         });
     });

@@ -71,50 +71,134 @@ def generate_insights(user_id, daily_data, appliance_data):
         insights.append({
             'type': 'alert',
             'priority': 'high',
-            'text': f'⚠️ Your consumption today ({recent_consumption[0]:.2f} kWh) is 30% higher than your weekly average. Check for appliances left on.'
+            'icon': '⚠️',
+            'title': 'High Consumption Alert',
+            'text': f'Your consumption today ({recent_consumption[0]:.2f} kWh) is 30% higher than your weekly average. Check for appliances left on.'
+        })
+    
+    # Low consumption praise
+    if recent_consumption[0] < avg_consumption * 0.8:
+        insights.append({
+            'type': 'success',
+            'priority': 'medium',
+            'icon': '🌟',
+            'title': 'Great Job!',
+            'text': f'Your consumption today ({recent_consumption[0]:.2f} kWh) is 20% lower than your average. Keep it up!'
         })
     
     # Peak usage time
     insights.append({
         'type': 'info',
         'priority': 'medium',
-        'text': '💡 Your peak usage is typically between 6 PM - 9 PM. Consider shifting some activities to off-peak hours to save on costs.'
+        'icon': '💡',
+        'title': 'Peak Usage Optimization',
+        'text': 'Your peak usage is typically between 6 PM - 9 PM. Consider shifting some activities to off-peak hours (11 PM - 6 AM) to save on costs.'
     })
     
     # Appliance recommendations
-    if appliance_data:
+    if appliance_data and len(appliance_data) > 0:
         top_consumer = appliance_data[0]
+        top_kwh = float(top_consumer["total_kwh"])
+        top_cost = float(top_consumer["total_cost"])
         insights.append({
             'type': 'tip',
-            'priority': 'medium',
-            'text': f'🔌 {top_consumer["appliance_name"]} is your highest energy consumer ({float(top_consumer["total_kwh"]):.1f} kWh). Consider energy-efficient alternatives.'
+            'priority': 'high',
+            'icon': '🔌',
+            'title': 'Top Energy Consumer',
+            'text': f'{top_consumer["appliance_name"]} is your highest energy consumer ({top_kwh:.1f} kWh, ₹{top_cost:.2f}). Consider upgrading to energy-efficient models.'
         })
+        
+        # If there are multiple appliances, suggest optimization
+        if len(appliance_data) >= 3:
+            total_top3_kwh = sum(float(a['total_kwh']) for a in appliance_data[:3])
+            total_all_kwh = sum(float(a['total_kwh']) for a in appliance_data)
+            percentage = (total_top3_kwh / total_all_kwh * 100) if total_all_kwh > 0 else 0
+            insights.append({
+                'type': 'info',
+                'priority': 'medium',
+                'icon': '📊',
+                'title': 'Appliance Usage Pattern',
+                'text': f'Your top 3 appliances consume {percentage:.0f}% of your total energy. Optimizing these can significantly reduce your bill.'
+            })
     
     # Weekend vs weekday
     if len(daily_data) >= 14:
-        weekday_avg = float(np.mean([float(d['total_kwh']) for d in daily_data if datetime.strptime(str(d['date']), '%Y-%m-%d').weekday() < 5][:7]))
-        weekend_avg = float(np.mean([float(d['total_kwh']) for d in daily_data if datetime.strptime(str(d['date']), '%Y-%m-%d').weekday() >= 5][:4]))
+        weekday_data = [float(d['total_kwh']) for d in daily_data if datetime.strptime(str(d['date']), '%Y-%m-%d').weekday() < 5][:7]
+        weekend_data = [float(d['total_kwh']) for d in daily_data if datetime.strptime(str(d['date']), '%Y-%m-%d').weekday() >= 5][:4]
         
-        if weekend_avg > weekday_avg * 1.2:
+        if weekday_data and weekend_data:
+            weekday_avg = float(np.mean(weekday_data))
+            weekend_avg = float(np.mean(weekend_data))
+            
+            if weekend_avg > weekday_avg * 1.2:
+                diff_percent = ((weekend_avg/weekday_avg - 1) * 100)
+                insights.append({
+                    'type': 'info',
+                    'priority': 'low',
+                    'icon': '📅',
+                    'title': 'Weekend Usage Pattern',
+                    'text': f'Your weekend consumption ({weekend_avg:.1f} kWh) is {diff_percent:.0f}% higher than weekdays ({weekday_avg:.1f} kWh). More people at home?'
+                })
+            elif weekday_avg > weekend_avg * 1.2:
+                diff_percent = ((weekday_avg/weekend_avg - 1) * 100)
+                insights.append({
+                    'type': 'info',
+                    'priority': 'low',
+                    'icon': '📅',
+                    'title': 'Weekday Usage Pattern',
+                    'text': f'Your weekday consumption ({weekday_avg:.1f} kWh) is {diff_percent:.0f}% higher than weekends. Consider reducing daytime appliance usage.'
+                })
+    
+    # Trend analysis
+    if len(daily_data) >= 7:
+        first_half = np.mean([float(d['total_kwh']) for d in daily_data[3:7]])
+        second_half = np.mean([float(d['total_kwh']) for d in daily_data[:3]])
+        
+        if second_half > first_half * 1.15:
             insights.append({
-                'type': 'info',
-                'priority': 'low',
-                'text': f'📊 Your weekend consumption is {((weekend_avg/weekday_avg - 1) * 100):.0f}% higher than weekdays.'
+                'type': 'warning',
+                'priority': 'high',
+                'icon': '📈',
+                'title': 'Increasing Trend Detected',
+                'text': f'Your consumption is increasing. Recent average: {second_half:.1f} kWh vs earlier: {first_half:.1f} kWh. Monitor your usage closely.'
+            })
+        elif second_half < first_half * 0.85:
+            insights.append({
+                'type': 'success',
+                'priority': 'medium',
+                'icon': '📉',
+                'title': 'Decreasing Trend - Excellent!',
+                'text': f'Your consumption is decreasing! Recent average: {second_half:.1f} kWh vs earlier: {first_half:.1f} kWh. Great progress!'
             })
     
     # Money saving tip
     try:
         user = db.get_user_by_id(user_id)
-        tariff_rate = float(user.get('tariff_rate', 7.00)) if user else 7.00  # Get user's tariff rate, default ₹7.00/kWh
+        tariff_rate = float(user.get('tariff_rate', 7.00)) if user else 7.00
     except Exception as e:
         print(f"Warning: Could not get user tariff rate: {e}")
-        tariff_rate = 7.00  # Default to ₹7.00/kWh if there's an error
+        tariff_rate = 7.00
     
-    potential_savings = avg_consumption * 0.15 * tariff_rate * 30  # 15% reduction
+    potential_savings_15 = avg_consumption * 0.15 * tariff_rate * 30
+    potential_savings_25 = avg_consumption * 0.25 * tariff_rate * 30
     insights.append({
         'type': 'success',
         'priority': 'high',
-        'text': f'💰 By reducing consumption by 15%, you could save approximately ₹{potential_savings:.2f} per month!'
+        'icon': '💰',
+        'title': 'Savings Opportunity',
+        'text': f'By reducing consumption by 15%, you could save ₹{potential_savings_15:.2f}/month. A 25% reduction could save ₹{potential_savings_25:.2f}/month!'
+    })
+    
+    # Carbon footprint insight
+    monthly_consumption = avg_consumption * 30
+    carbon_footprint = calculate_carbon_footprint(monthly_consumption)
+    trees_equivalent = carbon_footprint / 20  # 1 tree absorbs ~20kg CO2/year
+    insights.append({
+        'type': 'info',
+        'priority': 'medium',
+        'icon': '🌍',
+        'title': 'Environmental Impact',
+        'text': f'Your monthly carbon footprint is ~{carbon_footprint:.1f} kg CO₂. That\'s equivalent to planting {trees_equivalent:.1f} trees to offset!'
     })
     
     return insights
@@ -623,6 +707,116 @@ def visualize_appliances():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/api/visualize/energy-consumption', methods=['GET'])
+@login_required
+def visualize_energy_consumption():
+    """Generate only energy consumption chart"""
+    try:
+        user_id = session['user_id']
+        days = int(request.args.get('days', 30))
+        format_type = request.args.get('format', 'file')
+        
+        daily_data = db.get_daily_consumption(user_id, days=days)
+        
+        if not daily_data:
+            return jsonify({'error': 'No data available'}), 404
+        
+        df = pd.DataFrame(daily_data)
+        return_base64 = (format_type == 'base64')
+        result = visualizer.plot_energy_consumption_only(df, days=days, return_base64=return_base64)
+        
+        if return_base64:
+            return jsonify({'image': result}), 200
+        else:
+            return jsonify({'filepath': result}), 200
+            
+    except Exception as e:
+        print(f"Error in visualize_energy_consumption: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/visualize/cost-analysis', methods=['GET'])
+@login_required
+def visualize_cost_analysis():
+    """Generate only cost analysis chart"""
+    try:
+        user_id = session['user_id']
+        days = int(request.args.get('days', 30))
+        format_type = request.args.get('format', 'file')
+        
+        daily_data = db.get_daily_consumption(user_id, days=days)
+        
+        if not daily_data:
+            return jsonify({'error': 'No data available'}), 404
+        
+        df = pd.DataFrame(daily_data)
+        return_base64 = (format_type == 'base64')
+        result = visualizer.plot_cost_analysis_only(df, days=days, return_base64=return_base64)
+        
+        if return_base64:
+            return jsonify({'image': result}), 200
+        else:
+            return jsonify({'filepath': result}), 200
+            
+    except Exception as e:
+        print(f"Error in visualize_cost_analysis: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/visualize/appliance-bar', methods=['GET'])
+@login_required
+def visualize_appliance_bar():
+    """Generate only appliance bar chart"""
+    try:
+        user_id = session['user_id']
+        format_type = request.args.get('format', 'file')
+        
+        appliance_data = db.get_appliance_consumption(user_id)
+        
+        if not appliance_data:
+            return jsonify({'error': 'No data available'}), 404
+        
+        df = pd.DataFrame(appliance_data)
+        return_base64 = (format_type == 'base64')
+        result = visualizer.plot_appliance_bar_only(df, return_base64=return_base64)
+        
+        if return_base64:
+            return jsonify({'image': result}), 200
+        else:
+            return jsonify({'filepath': result}), 200
+            
+    except Exception as e:
+        print(f"Error in visualize_appliance_bar: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/visualize/appliance-pie', methods=['GET'])
+@login_required
+def visualize_appliance_pie():
+    """Generate only appliance pie chart"""
+    try:
+        user_id = session['user_id']
+        format_type = request.args.get('format', 'file')
+        
+        appliance_data = db.get_appliance_consumption(user_id)
+        
+        if not appliance_data:
+            return jsonify({'error': 'No data available'}), 404
+        
+        df = pd.DataFrame(appliance_data)
+        return_base64 = (format_type == 'base64')
+        result = visualizer.plot_appliance_pie_only(df, return_base64=return_base64)
+        
+        if return_base64:
+            return jsonify({'image': result}), 200
+        else:
+            return jsonify({'filepath': result}), 200
+            
+    except Exception as e:
+        print(f"Error in visualize_appliance_pie: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/visualize/monthly', methods=['GET'])
 @login_required
 def visualize_monthly():
@@ -648,6 +842,109 @@ def visualize_monthly():
             return jsonify({'filepath': result}), 200
             
     except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/visualize/hourly-pattern', methods=['GET'])
+@login_required
+def visualize_hourly_pattern():
+    """Generate hourly consumption pattern chart"""
+    try:
+        user_id = session['user_id']
+        format_type = request.args.get('format', 'file')
+        
+        # Get hourly data (if available) or simulate from daily data
+        hourly_data = db.get_hourly_pattern(user_id) if hasattr(db, 'get_hourly_pattern') else None
+        
+        if not hourly_data:
+            # Generate sample hourly pattern for demonstration
+            hourly_data = []
+            for hour in range(24):
+                # Simulate consumption pattern (higher during evening hours)
+                if 6 <= hour < 9:  # Morning peak
+                    avg_kwh = np.random.uniform(2.0, 3.5)
+                elif 18 <= hour < 22:  # Evening peak
+                    avg_kwh = np.random.uniform(3.0, 4.5)
+                else:  # Off-peak
+                    avg_kwh = np.random.uniform(0.5, 2.0)
+                hourly_data.append({'hour': hour, 'avg_kwh': avg_kwh})
+        
+        df = pd.DataFrame(hourly_data)
+        return_base64 = (format_type == 'base64')
+        result = visualizer.plot_hourly_pattern(df, return_base64=return_base64)
+        
+        if return_base64:
+            return jsonify({'image': result}), 200
+        else:
+            return jsonify({'filepath': result}), 200
+            
+    except Exception as e:
+        print(f"Error in visualize_hourly_pattern: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/visualize/weekly-comparison', methods=['GET'])
+@login_required
+def visualize_weekly_comparison():
+    """Generate weekly comparison chart"""
+    try:
+        user_id = session['user_id']
+        format_type = request.args.get('format', 'file')
+        
+        # Get daily data and calculate weekly averages
+        daily_data = db.get_daily_consumption(user_id, days=30)
+        
+        if not daily_data:
+            return jsonify({'error': 'No data available'}), 404
+        
+        df = pd.DataFrame(daily_data)
+        df['date'] = pd.to_datetime(df['date'])
+        df['day_name'] = df['date'].dt.day_name()
+        
+        # Calculate averages by day of week
+        weekly_data = df.groupby('day_name').agg({
+            'total_kwh': 'mean',
+            'total_cost': 'mean'
+        }).reset_index()
+        weekly_data.columns = ['day_name', 'avg_kwh', 'total_cost']
+        
+        return_base64 = (format_type == 'base64')
+        result = visualizer.plot_weekly_comparison(weekly_data, return_base64=return_base64)
+        
+        if return_base64:
+            return jsonify({'image': result}), 200
+        else:
+            return jsonify({'filepath': result}), 200
+            
+    except Exception as e:
+        print(f"Error in visualize_weekly_comparison: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/visualize/appliance-efficiency', methods=['GET'])
+@login_required
+def visualize_appliance_efficiency():
+    """Generate appliance efficiency chart"""
+    try:
+        user_id = session['user_id']
+        format_type = request.args.get('format', 'file')
+        
+        appliance_data = db.get_appliance_consumption(user_id)
+        
+        if not appliance_data:
+            return jsonify({'error': 'No data available'}), 404
+        
+        df = pd.DataFrame(appliance_data)
+        return_base64 = (format_type == 'base64')
+        result = visualizer.plot_appliance_efficiency(df, return_base64=return_base64)
+        
+        if return_base64:
+            return jsonify({'image': result}), 200
+        else:
+            return jsonify({'filepath': result}), 200
+            
+    except Exception as e:
+        print(f"Error in visualize_appliance_efficiency: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 
