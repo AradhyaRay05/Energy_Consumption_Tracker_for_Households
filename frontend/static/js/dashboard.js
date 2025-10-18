@@ -177,6 +177,48 @@ async function loadConsumptionCharts() {
         console.error('Error loading cost analysis chart:', error);
         costContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
     }
+    
+    // Load hourly pattern chart
+    const hourlyContainer = document.getElementById('hourly-pattern-chart');
+    hourlyContainer.innerHTML = '<div class="loading">Loading chart...</div>';
+    
+    try {
+        const response = await fetch(`${API_URL}/visualize/hourly-pattern?format=base64`, {
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.image) {
+            hourlyContainer.innerHTML = `<img src="${data.image}" alt="Hourly Pattern Chart">`;
+        } else {
+            hourlyContainer.innerHTML = '<p class="text-muted">No data available for visualization</p>';
+        }
+    } catch (error) {
+        console.error('Error loading hourly pattern chart:', error);
+        hourlyContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
+    }
+    
+    // Load weekly comparison chart
+    const weeklyContainer = document.getElementById('weekly-comparison-chart');
+    weeklyContainer.innerHTML = '<div class="loading">Loading chart...</div>';
+    
+    try {
+        const response = await fetch(`${API_URL}/visualize/weekly-comparison?format=base64`, {
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.image) {
+            weeklyContainer.innerHTML = `<img src="${data.image}" alt="Weekly Comparison Chart">`;
+        } else {
+            weeklyContainer.innerHTML = '<p class="text-muted">No data available for visualization</p>';
+        }
+    } catch (error) {
+        console.error('Error loading weekly comparison chart:', error);
+        weeklyContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
+    }
 }
 
 // Load appliance charts (bar + pie)
@@ -221,6 +263,27 @@ async function loadApplianceCharts() {
     } catch (error) {
         console.error('Error loading appliance pie chart:', error);
         pieContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
+    }
+    
+    // Load appliance efficiency chart
+    const efficiencyContainer = document.getElementById('appliance-efficiency-chart');
+    efficiencyContainer.innerHTML = '<div class="loading">Loading chart...</div>';
+    
+    try {
+        const response = await fetch(`${API_URL}/visualize/appliance-efficiency?format=base64`, {
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.image) {
+            efficiencyContainer.innerHTML = `<img src="${data.image}" alt="Appliance Efficiency Chart">`;
+        } else {
+            efficiencyContainer.innerHTML = '<p class="text-muted">No data available for visualization</p>';
+        }
+    } catch (error) {
+        console.error('Error loading appliance efficiency chart:', error);
+        efficiencyContainer.innerHTML = '<p class="text-muted">Error loading chart</p>';
     }
 }
 
