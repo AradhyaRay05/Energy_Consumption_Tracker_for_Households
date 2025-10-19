@@ -14,11 +14,16 @@ class DatabaseConfig:
     
     def __init__(self):
         """Initialize database configuration"""
-        self.host = os.getenv('DB_HOST', 'localhost')
-        self.port = os.getenv('DB_PORT', '3306')
-        self.database = os.getenv('DB_NAME', 'energy_tracker')
-        self.user = os.getenv('DB_USER', 'root')
-        self.password = os.getenv('DB_PASSWORD', '')
+        # Support both Railway (MYSQL_*) and manual (DB_*) environment variables
+        self.host = os.getenv('MYSQL_HOST') or os.getenv('DB_HOST', 'localhost')
+        self.port = os.getenv('MYSQL_PORT') or os.getenv('DB_PORT', '3306')
+        self.database = os.getenv('MYSQL_DATABASE') or os.getenv('DB_NAME', 'railway')
+        self.user = os.getenv('MYSQL_USER') or os.getenv('DB_USER', 'root')
+        self.password = os.getenv('MYSQL_PASSWORD') or os.getenv('DB_PASSWORD', '')
+        
+        # Debug: Print connection info (password masked)
+        print(f"🔌 Database Config: host={self.host}, port={self.port}, db={self.database}, user={self.user}")
+        
         self.connection = None
         self.connection_pool = None
         self._initialize_pool()
