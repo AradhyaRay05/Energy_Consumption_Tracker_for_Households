@@ -1,104 +1,205 @@
-# 📁 Complete Project Structure
+# 📁 Project File Structure# 📁 Complete Project Structure
 
-```
-Energy-Consumption-Tracker/
+
+
+## Overview```
+
+This document outlines the complete file structure of the Energy Consumption Tracker application.Energy-Consumption-Tracker/
+
 │
-├── 📄 README.md                          # Complete project documentation
-├── 📄 QUICKSTART.md                      # 5-minute setup guide
-├── 📄 PROJECT_SUMMARY.md                 # Project overview & achievements
-├── 📄 LICENSE                            # MIT License
-├── 📄 .gitignore                         # Git ignore rules
-├── 📄 .env.example                       # Environment variables template
-├── 📄 requirements.txt                   # Python dependencies
-│
-├── 📂 backend/                           # Flask Backend Server
-│   ├── 📄 app.py                         # Main Flask application (630+ lines)
-│   │                                     #   - Authentication routes
-│   │                                     #   - Dashboard API endpoints
-│   │                                     #   - Data management routes
-│   │                                     #   - Prediction endpoints
-│   │                                     #   - Visualization routes
-│   │
-│   └── 📄 config.py                      # Configuration management (100+ lines)
-│                                         #   - Development config
-│                                         #   - Production config
-│                                         #   - Testing config
-│
-├── 📂 ml_models/                         # Machine Learning & Visualization
-│   ├── 📄 energy_predictor.py            # ML prediction model (420+ lines)
-│   │                                     #   - Random Forest Regressor
-│   │                                     #   - Feature engineering
-│   │                                     #   - Daily/weekly/monthly predictions
-│   │                                     #   - Model training & saving
-│   │
-│   ├── 📄 visualizations.py              # Matplotlib charts (450+ lines)
-│   │                                     #   - Daily consumption trends
-│   │                                     #   - Appliance breakdown
-│   │                                     #   - Hourly patterns
-│   │                                     #   - Weekly patterns
-│   │                                     #   - Monthly trends
-│   │                                     #   - Prediction comparisons
-│   │                                     #   - Dashboard summaries
-│   │
-│   └── 📂 models/                        # Saved ML models directory
-│       └── 📄 .gitkeep                   # Ensures directory exists
-│
-├── 📂 database/                          # Database Layer
-│   ├── 📄 schema.sql                     # Complete database schema (200+ lines)
-│   │                                     #   - users table
-│   │                                     #   - energy_data table
+
+```├── 📄 README.md                          # Complete project documentation
+
+Energy-Consumption-Tracker/├── 📄 QUICKSTART.md                      # 5-minute setup guide
+
+│├── 📄 PROJECT_SUMMARY.md                 # Project overview & achievements
+
+├── .env.example              # Environment variables template├── 📄 LICENSE                            # MIT License
+
+├── .gitignore                # Git ignore configuration├── 📄 .gitignore                         # Git ignore rules
+
+├── Procfile                  # Production deployment configuration├── 📄 .env.example                       # Environment variables template
+
+├── runtime.txt               # Python runtime version├── 📄 requirements.txt                   # Python dependencies
+
+├── requirements.txt          # Python dependencies│
+
+├── README.md                 # Project documentation├── 📂 backend/                           # Flask Backend Server
+
+├── QUICKSTART.md             # Quick setup guide│   ├── 📄 app.py                         # Main Flask application (630+ lines)
+
+├── FILE_STRUCTURE.md         # This file│   │                                     #   - Authentication routes
+
+││   │                                     #   - Dashboard API endpoints
+
+├── backend/│   │                                     #   - Data management routes
+
+│   └── app.py                # Flask API server (main application)│   │                                     #   - Prediction endpoints
+
+││   │                                     #   - Visualization routes
+
+├── ml_models/│   │
+
+│   ├── energy_predictor.py   # Machine learning prediction model│   └── 📄 config.py                      # Configuration management (100+ lines)
+
+│   ├── visualizations.py     # Chart generation module│                                         #   - Development config
+
+│   └── models/               # Trained ML models directory│                                         #   - Production config
+
+│       └── .gitkeep│                                         #   - Testing config
+
+││
+
+├── database/├── 📂 ml_models/                         # Machine Learning & Visualization
+
+│   ├── schema.sql            # MySQL database schema│   ├── 📄 energy_predictor.py            # ML prediction model (420+ lines)
+
+│   └── db_config.py          # Database connection configuration│   │                                     #   - Random Forest Regressor
+
+││   │                                     #   - Feature engineering
+
+├── frontend/│   │                                     #   - Daily/weekly/monthly predictions
+
+│   ├── templates/│   │                                     #   - Model training & saving
+
+│   │   ├── index.html        # Landing page│   │
+
+│   │   ├── login.html        # Authentication page│   ├── 📄 visualizations.py              # Matplotlib charts (450+ lines)
+
+│   │   └── dashboard.html    # Main dashboard│   │                                     #   - Daily consumption trends
+
+│   ││   │                                     #   - Appliance breakdown
+
+│   └── static/│   │                                     #   - Hourly patterns
+
+│       ├── css/│   │                                     #   - Weekly patterns
+
+│       │   └── style.css     # Application styles│   │                                     #   - Monthly trends
+
+│       ││   │                                     #   - Prediction comparisons
+
+│       ├── js/│   │                                     #   - Dashboard summaries
+
+│       │   ├── auth.js       # Authentication logic│   │
+
+│       │   └── dashboard.js  # Dashboard functionality│   └── 📂 models/                        # Saved ML models directory
+
+│       ││       └── 📄 .gitkeep                   # Ensures directory exists
+
+│       └── images/           # Static image assets│
+
+│├── 📂 database/                          # Database Layer
+
+└── data/│   ├── 📄 schema.sql                     # Complete database schema (200+ lines)
+
+    └── generate_sample_data.py  # Sample data generator script│   │                                     #   - users table
+
+```│   │                                     #   - energy_data table
+
 │   │                                     #   - predictions table
-│   │                                     #   - appliances table
+
+---│   │                                     #   - appliances table
+
 │   │                                     #   - insights table
-│   │                                     #   - Views for common queries
+
+## Directory Descriptions│   │                                     #   - Views for common queries
+
 │   │                                     #   - Sample data
-│   │
-│   └── 📄 db_config.py                   # Database utilities (270+ lines)
-│                                         #   - Connection management
-│                                         #   - CRUD operations
-│                                         #   - Query helpers
-│                                         #   - DataFrame conversion
-│
-├── 📂 frontend/                          # Frontend User Interface
+
+### Root Files│   │
+
+- **`.env.example`** - Template for environment variables (copy to `.env` for local setup)│   └── 📄 db_config.py                   # Database utilities (270+ lines)
+
+- **`.gitignore`** - Specifies files to ignore in version control│                                         #   - Connection management
+
+- **`Procfile`** - Tells deployment platforms how to run the application│                                         #   - CRUD operations
+
+- **`runtime.txt`** - Specifies Python version for deployment│                                         #   - Query helpers
+
+- **`requirements.txt`** - Lists all Python dependencies│                                         #   - DataFrame conversion
+
+- **`README.md`** - Main project documentation│
+
+- **`QUICKSTART.md`** - Quick setup instructions├── 📂 frontend/                          # Frontend User Interface
+
 │   ├── 📂 templates/                     # HTML Templates
-│   │   ├── 📄 index.html                 # Landing page (150+ lines)
-│   │   │                                 #   - Hero section
+
+### `/backend`│   │   ├── 📄 index.html                 # Landing page (150+ lines)
+
+Contains the Flask application server with all API endpoints.│   │   │                                 #   - Hero section
+
 │   │   │                                 #   - Features showcase
-│   │   │                                 #   - How it works
-│   │   │                                 #   - Statistics
-│   │   │                                 #   - CTA sections
-│   │   │
-│   │   ├── 📄 login.html                 # Authentication page (130+ lines)
+
+### `/ml_models`│   │   │                                 #   - How it works
+
+Houses machine learning components:│   │   │                                 #   - Statistics
+
+- Prediction model implementation│   │   │                                 #   - CTA sections
+
+- Data visualization functions│   │   │
+
+- Saved trained models (`.pkl` files)│   │   ├── 📄 login.html                 # Authentication page (130+ lines)
+
 │   │   │                                 #   - Login form
-│   │   │                                 #   - Registration form
-│   │   │                                 #   - Tab switching
-│   │   │                                 #   - Form validation
-│   │   │
+
+### `/database`│   │   │                                 #   - Registration form
+
+Database-related files:│   │   │                                 #   - Tab switching
+
+- SQL schema definition│   │   │                                 #   - Form validation
+
+- Database connection pooling and configuration│   │   │
+
 │   │   └── 📄 dashboard.html             # Main dashboard (200+ lines)
-│   │                                     #   - Sidebar navigation
-│   │                                     #   - Statistics cards
-│   │                                     #   - Insights section
-│   │                                     #   - Chart displays
-│   │                                     #   - Predictions table
-│   │                                     #   - Add data form
+
+### `/frontend`│   │                                     #   - Sidebar navigation
+
+User interface components:│   │                                     #   - Statistics cards
+
+- **`/templates`** - HTML pages│   │                                     #   - Insights section
+
+- **`/static/css`** - Stylesheets│   │                                     #   - Chart displays
+
+- **`/static/js`** - JavaScript files│   │                                     #   - Predictions table
+
+- **`/static/images`** - Image assets│   │                                     #   - Add data form
+
 │   │
-│   └── 📂 static/                        # Static Assets
-│       ├── 📂 css/
+
+### `/data`│   └── 📂 static/                        # Static Assets
+
+Utility scripts for data generation and manipulation.│       ├── 📂 css/
+
 │       │   └── 📄 style.css              # Comprehensive styling (800+ lines)
-│       │                                 #   - Responsive design
+
+---│       │                                 #   - Responsive design
+
 │       │                                 #   - Component styles
-│       │                                 #   - Dashboard layouts
+
+## Key Technologies│       │                                 #   - Dashboard layouts
+
 │       │                                 #   - Animations
-│       │                                 #   - Color themes
-│       │
-│       ├── 📂 js/
-│       │   ├── 📄 auth.js                # Authentication logic (110+ lines)
-│       │   │                             #   - Login/register handlers
-│       │   │                             #   - Form validation
+
+- **Backend:** Flask (Python 3.11)│       │                                 #   - Color themes
+
+- **Database:** MySQL 8.0+│       │
+
+- **ML:** XGBoost, scikit-learn│       ├── 📂 js/
+
+- **Visualization:** matplotlib, seaborn│       │   ├── 📄 auth.js                # Authentication logic (110+ lines)
+
+- **Frontend:** HTML5, CSS3, JavaScript│       │   │                             #   - Login/register handlers
+
+- **Deployment:** Gunicorn (production server)│       │   │                             #   - Form validation
+
 │       │   │                             #   - Session management
-│       │   │                             #   - Error handling
+
+---│       │   │                             #   - Error handling
+
 │       │   │
-│       │   └── 📄 dashboard.js           # Dashboard functionality (350+ lines)
+
+*For setup instructions, see QUICKSTART.md*│       │   └── 📄 dashboard.js           # Dashboard functionality (350+ lines)
+
 │       │                                 #   - Data loading
 │       │                                 #   - Chart display
 │       │                                 #   - API communication

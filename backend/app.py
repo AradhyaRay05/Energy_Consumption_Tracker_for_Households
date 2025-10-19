@@ -1069,12 +1069,28 @@ def internal_error(error):
 # ==================== MAIN ====================
 
 if __name__ == '__main__':
+    import os
+    
+    # Get port from environment variable (for deployment platforms)
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Check if we're in production
+    is_production = os.environ.get('FLASK_ENV', 'development') == 'production'
+    debug_mode = not is_production
+    
     print("=" * 50)
     print("Energy Consumption Tracker - Backend Server")
     print("=" * 50)
-    print(f"Starting Flask server...")
+    print(f"Starting Flask server on port {port}...")
+    print(f"Environment: {os.environ.get('FLASK_ENV', 'development')}")
+    print(f"Debug mode: {debug_mode}")
     print(f"Frontend directory: {app.template_folder}")
     print(f"Static directory: {app.static_folder}")
     print("=" * 50)
     
-    app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
+    app.run(
+        debug=debug_mode,
+        host='0.0.0.0',
+        port=port,
+        use_reloader=False  # Disable reloader for deployment
+    )
