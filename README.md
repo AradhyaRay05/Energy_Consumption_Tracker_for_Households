@@ -669,17 +669,17 @@ MIT License - See [LICENSE](LICENSE) file for details5. Choose date/time
 
 1. Navigate to "Predictions" section
 
-**Aradhya Ray**2. Click "Generate Predictions"
+2. Click "Generate Predictions"
 
-- GitHub: [@AradhyaRay05](https://github.com/AradhyaRay05)3. View 7-day forecast and monthly estimate
-
-- Repository: [Energy-Consumption-Tracker](https://github.com/AradhyaRay05)
+3. View 7-day forecast and monthly estimate
+   
+---
 
 ### 6. Analyze Consumption
 
----
-
 - Use date range selectors on charts
+
+---
 
 ## 🙏 Acknowledgments- View appliance-wise breakdown
 
@@ -689,7 +689,7 @@ MIT License - See [LICENSE](LICENSE) file for details5. Choose date/time
 
 - **XGBoost** - Gradient boosting library
 
-- **matplotlib** - Visualization toolkit---
+- **matplotlib** - Visualization toolkit
 
 - **MySQL** - Reliable database system
 
@@ -705,25 +705,19 @@ MIT License - See [LICENSE](LICENSE) file for details5. Choose date/time
 
 ```
 
-For issues or questions:POST /api/auth/register
-
-- Open an issue on [GitHub](https://github.com/AradhyaRay05/Energy-Consumption-Tracker/issues)Content-Type: application/json
-
-
-
 ---{
 
   "username": "john_doe",
 
-**⭐ If this project helps you, please give it a star!**  "email": "john@example.com",
+   "email": "john@example.com",
 
   "password": "secure_password",
 
----  "full_name": "John Doe",
+   "full_name": "John Doe",
 
-  "household_size": 3,
+   "household_size": 3,
 
-*Built with ❤️ for sustainable energy future | Last Updated: October 2024*  "tariff_rate": 0.12
+   "tariff_rate": 0.12
 
 }
 ```
@@ -996,15 +990,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-## 👨‍💻 Author
-
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
-
----
-
 ## 🙏 Acknowledgments
 
 - Flask documentation and community
@@ -1012,12 +997,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Matplotlib for visualization tools
 - MySQL for robust data storage
 - OpenAI for inspiration and guidance
-
----
-
-## 📞 Support
-
-For support, email support@energytracker.com or open an issue on GitHub.
 
 ---
 
