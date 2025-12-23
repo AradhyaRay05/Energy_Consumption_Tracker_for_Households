@@ -7,7 +7,9 @@
 
 
 
-![Python](https://img.shields.io/badge/Python-3.11-blue.svg)**🇮🇳 Configured for India**: Uses Indian Rupees (₹), Indian electricity tariff rates (₹6-8/kWh), and India's carbon intensity (0.82 kg CO₂/kWh).
+**🇮🇳 Configured for India**: Uses Indian Rupees (₹), Indian electricity tariff rates (₹6-8/kWh), and India's carbon intensity (0.82 kg CO₂/kWh).
+
+![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
 
 ![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)
 
