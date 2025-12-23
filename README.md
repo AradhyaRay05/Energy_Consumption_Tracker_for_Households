@@ -19,7 +19,7 @@
 
 ![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)
 
----![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ![India](https://img.shields.io/badge/Region-India-orange.svg)
 
