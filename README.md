@@ -35,33 +35,33 @@ Households lack visibility into their energy consumption patterns, leading to:
 
 - ❌ Inability to identify energy-hungry appliances
 
-- ❌ No predictive insights for future consumption- [Problem Background](#-problem-background)
+- ❌ No predictive insights for future consumption- [Problem Background](#problem-background)
 
-- ❌ Missed opportunities to reduce carbon footprint- [Project Goals](#-project-goals)
+- ❌ Missed opportunities to reduce carbon footprint- [Project Goals](#project-goals)
 
-- [Features](#-features)
+- [Features](#features)
 
-**Solution:** A data-driven web application that monitors, analyzes, and predicts energy consumption with actionable insights.- [Tech Stack](#️-tech-stack)
+**Solution:** A data-driven web application that monitors, analyzes, and predicts energy consumption with actionable insights.- [Tech Stack](#️tech-stack)
 
-- [Project Structure](#-project-structure)
+- [Project Structure](#project-structure)
 
----- [Installation](#-installation)
+- [Installation](#installation)
 
 - [Usage](#-usage)
 
 ## ✨ Key Features- [API Documentation](#-api-documentation)
 
-- [Machine Learning Model](#-machine-learning-model)
+- [Machine Learning Model](#machine-learning-model)
 
 ### 📊 8 Interactive Visualization Charts- [Database Schema](#️-database-schema)
 
 1. **Daily Energy Consumption** - Track trends over 7/30/90 days- [Screenshots](#-screenshots)
 
-2. **Cost Analysis** - Monitor expenses with pricing tier breakdown- [Future Enhancements](#-future-enhancements)
+2. **Cost Analysis** - Monitor expenses with pricing tier breakdown- [Future Enhancements](#future-enhancements)
 
 3. **Hourly Usage Patterns** - Identify peak consumption hours- [Contributing](#-contributing)
 
-4. **Weekly Comparison** - Weekday vs weekend analysis- [License](#-license)
+4. **Weekly Comparison** - Weekday vs weekend analysis- [License](#license)
 
 5. **Appliance Bar Chart** - Top energy consumers
 
@@ -93,11 +93,13 @@ This lack of awareness leads to:
 
 - Cost-saving suggestions
 
-- Carbon footprint reduction tips---
+- Carbon footprint reduction tips
 
+---
 
+### 🔌 Appliance-Level Tracking
 
-### 🔌 Appliance-Level Tracking## 🎯 Project Goals
+## 🎯 Project Goals
 
 - Individual appliance consumption monitoring
 
@@ -105,11 +107,13 @@ This lack of awareness leads to:
 
 - Power usage analytics
 
-- Timeline visualization1. ✅ **Monitor** real-time energy consumption
+- Timeline visualization
+
+1. ✅ **Monitor** real-time energy consumption
 
 2. ✅ **Analyze** usage patterns and trends
 
----3. ✅ **Predict** future consumption and costs using ML
+3. ✅ **Predict** future consumption and costs using ML
 
 4. ✅ **Visualize** data through interactive charts
 
@@ -137,13 +141,11 @@ This lack of awareness leads to:
 
 - **Carbon Footprint**: Uses India's grid carbon intensity (0.82 kg CO₂/kWh)
 
----- **Regional Tariffs**: Supports rates from ₹3-12/kWh (varies by state)
+- **Regional Tariffs**: Supports rates from ₹3-12/kWh (varies by state)
 
 - **Slab-Based Pricing**: Calculate effective rates from your electricity bill
 
-## 📁 Project Structure- **State-wise Information**: Comprehensive guide for all Indian states (see [INDIA_TARIFF_INFO.md](INDIA_TARIFF_INFO.md))
-
-
+## 📁 Project Structure- 
 
 ```### Supported Tariff Ranges by Region:
 
