@@ -53,23 +53,26 @@ Households lack visibility into their energy consumption patterns, leading to:
 
 - [Machine Learning Model](#machine-learning-model)
 
-### 📊 8 Interactive Visualization Charts- [Database Schema](#️-database-schema)
+### 📊 8 Interactive Visualization Charts- 
 
-1. **Daily Energy Consumption** - Track trends over 7/30/90 days- [Screenshots](#-screenshots)
+1. **Daily Energy Consumption** - Track trends over 7/30/90 days
 
-2. **Cost Analysis** - Monitor expenses with pricing tier breakdown- [Future Enhancements](#future-enhancements)
+2. **Cost Analysis** - Monitor expenses with pricing tier breakdown
 
-3. **Hourly Usage Patterns** - Identify peak consumption hours- [Contributing](#-contributing)
+3. **Hourly Usage Patterns** - Identify peak consumption hours
 
-4. **Weekly Comparison** - Weekday vs weekend analysis- [License](#license)
+4. **Weekly Comparison** - Weekday vs weekend analysis
 
 5. **Appliance Bar Chart** - Top energy consumers
 
-6. **Appliance Pie Chart** - Usage distribution---
+6. **Appliance Pie Chart** - Usage distribution
 
 7. **Appliance Efficiency Rating** - Performance scores (0-100)
 
-8. **Appliance Usage Timeline** - Historical trends (7/14/30 days)## 🧩 Problem Background
+8. **Appliance Usage Timeline** - Historical trends (7/14/30 days)
+
+
+## 🧩 Problem Background
 
 
 
