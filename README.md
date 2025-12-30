@@ -400,17 +400,15 @@ Contributions welcome! Please follow:- **Statistics Cards:** Total consumption, 
 
 5. Open Pull Request### 4. Add Energy Data
 
+---
 
-
----1. Click "Add Data" in the sidebar
+1. Click "Add Data" in the sidebar
 
 2. Select appliance
 
-## 📄 License3. Enter power usage (kWh)
+3. Enter power usage (kWh)
 
 4. Set duration (hours)
-
-MIT License - See [LICENSE](LICENSE) file for details5. Choose date/time
 
 6. Click "Add Record"
 
