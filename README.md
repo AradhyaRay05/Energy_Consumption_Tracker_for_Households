@@ -31,22 +31,16 @@
 
 Households lack visibility into their energy consumption patterns, leading to:
 
-- ❌ Inefficient electricity usage and high bills## 📋 Table of Contents
+- ❌ Inefficient electricity usage and high bills
 
 - ❌ Inability to identify energy-hungry appliances
 
 - ❌ No predictive insights for future consumption 
 
 - ❌ Missed opportunities to reduce carbon footprint
-  
 
 **Solution:** A data-driven web application that monitors, analyzes, and predicts energy consumption with actionable insights.
 
-- [Project Structure](#project-structure)
-
-- [Installation](#installation)
-
-- [Usage](#-usage)
 
 ## ✨ Key Features- [API Documentation](#-api-documentation)
 
