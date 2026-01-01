@@ -42,9 +42,7 @@ Households lack visibility into their energy consumption patterns, leading to:
 **Solution:** A data-driven web application that monitors, analyzes, and predicts energy consumption with actionable insights.
 
 
-## ✨ Key Features- [API Documentation](#-api-documentation)
-
-- [Machine Learning Model](#machine-learning-model)
+## ✨ Key Features-
 
 ### 📊 8 Interactive Visualization Charts- 
 
@@ -66,8 +64,6 @@ Households lack visibility into their energy consumption patterns, leading to:
 
 
 ## 🧩 Problem Background
-
-
 
 ### 🔮 Machine Learning PredictionsHousehold energy consumption contributes heavily to both global energy use and carbon emissions. Many people remain unaware of:
 
