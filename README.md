@@ -37,7 +37,7 @@ Households lack visibility into their energy consumption patterns, leading to:
 
 - ❌ No predictive insights for future consumption 
 
-- ❌ Missed opportunities to reduce carbon footprint- [Project Goals](#project-goals)
+- ❌ Missed opportunities to reduce carbon footprint
 
 - [Features](#features)
 
