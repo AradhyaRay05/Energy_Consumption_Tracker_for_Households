@@ -35,7 +35,7 @@ Households lack visibility into their energy consumption patterns, leading to:
 
 - ❌ Inability to identify energy-hungry appliances
 
-- ❌ No predictive insights for future consumption  [Problem Background](#problem-background)
+- ❌ No predictive insights for future consumption 
 
 - ❌ Missed opportunities to reduce carbon footprint- [Project Goals](#project-goals)
 
