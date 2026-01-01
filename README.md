@@ -25,9 +25,9 @@
 
 ![India](https://img.shields.io/badge/Region-India-orange.svg)
 
-## 🎯 Problem Statement
-
 ---
+
+## 🎯 Problem Statement
 
 Households lack visibility into their energy consumption patterns, leading to:
 
@@ -38,10 +38,9 @@ Households lack visibility into their energy consumption patterns, leading to:
 - ❌ No predictive insights for future consumption 
 
 - ❌ Missed opportunities to reduce carbon footprint
+  
 
-- [Features](#features)
-
-**Solution:** A data-driven web application that monitors, analyzes, and predicts energy consumption with actionable insights.- [Tech Stack](#️tech-stack)
+**Solution:** A data-driven web application that monitors, analyzes, and predicts energy consumption with actionable insights.
 
 - [Project Structure](#project-structure)
 
