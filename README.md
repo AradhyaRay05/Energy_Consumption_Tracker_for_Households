@@ -13,7 +13,9 @@
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 
-![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)
+![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)
+
+![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)
 
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)
 
