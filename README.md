@@ -1,11 +1,7 @@
 # ⚡ Smart Energy Consumption Tracker & Predictor 
 # ⚡ Energy Consumption Tracker for Indian Households
 
-
-
 > **AI-powered energy monitoring dashboard with real-time insights, predictive analytics, and appliance-level tracking to reduce electricity costs and carbon footprint.**A comprehensive full-stack web application that empowers Indian households to monitor, analyze, and predict their energy consumption using machine learning. Track your electricity usage, visualize patterns, get AI-powered predictions, and receive personalized insights to reduce costs and carbon footprint.
-
-
 
 **🇮🇳 Configured for India**: Uses Indian Rupees (₹), Indian electricity tariff rates (₹6-8/kWh), and India's carbon intensity (0.82 kg CO₂/kWh).
 
@@ -13,15 +9,17 @@
 
 ![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)
 
-![ML](https://img.shields.io/badge/ML-XGBoost%20%7C%20scikit--learn-orange.svg)![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![ML](https://img.shields.io/badge/ML-XGBoost%20%7C%20scikit--learn-orange.svg)
+
+![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 
 ![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)
 
-![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3.0-orange.svg)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen.svg)
+
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3.0-orange.svg)
 
 ![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)
-
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ![India](https://img.shields.io/badge/Region-India-orange.svg)
 
